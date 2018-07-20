@@ -1,4 +1,5 @@
 export const enum TokenType {
+  AND = 'AND',
   DIVIDE = 'DIVIDE',
   ELSE = 'ELSE',
   EQUAL = 'EQUAL',
@@ -14,9 +15,11 @@ export const enum TokenType {
   LT_EQUAL = 'LT_EQUAL',
   MINUS = 'MINUS',
   MULTIPLY = 'MULTIPLY',
+  NIL = 'NIL',
   NOT = 'NOT',
   NOT_EQUAL = 'NOT_EQUAL',
   NUMBER = 'NUMBER',
+  OR = 'OR',
   PLUS = 'PLUS',
   POWER = 'POWER',
   PRINT = 'PRINT',

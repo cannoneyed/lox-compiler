@@ -78,7 +78,6 @@ export const evaluate = (node: Node.Node): any => {
 
   if (node instanceof Node.UnaryExpression) {
     const right = evaluate(node.right);
-    console.log(node);
     switch (node.operation) {
       case TokenType.MINUS:
         return -1 * right;
@@ -92,6 +91,10 @@ export const evaluate = (node: Node.Node): any => {
     const right = evaluate(node.right);
 
     switch (node.operation) {
+      case TokenType.AND:
+        return left && right;
+      case TokenType.OR:
+        return left || right;
       case TokenType.EQUAL_EQUAL:
         return left === right;
       case TokenType.NOT_EQUAL:
@@ -119,5 +122,9 @@ export const evaluate = (node: Node.Node): any => {
 
   if (node instanceof Node.Number || node instanceof Node.Boolean) {
     return node.value;
+  }
+
+  if (node instanceof Node.Nil) {
+    return null;
   }
 };

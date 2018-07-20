@@ -71,6 +71,10 @@ export class String {
   constructor(public value: string) {}
 }
 
+export class Nil {
+  constructor() {}
+}
+
 export class UnaryExpression {
   constructor(public operation: TokenType, public right: Expression) {}
 }

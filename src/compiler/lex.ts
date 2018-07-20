@@ -10,6 +10,8 @@ const captureGroups = [
   { str: '\\(', type: TokenType.LEFT_PAREN },
   { str: '\\)', type: TokenType.RIGHT_PAREN },
   { str: 'var', type: TokenType.VAR },
+  { str: 'and', type: TokenType.AND },
+  { str: 'or', type: TokenType.OR },
   { str: '!=', type: TokenType.NOT_EQUAL },
   { str: '==', type: TokenType.EQUAL_EQUAL },
   { str: '>=', type: TokenType.GT_EQUAL },
@@ -26,6 +28,7 @@ const captureGroups = [
   { str: 'print', type: TokenType.PRINT },
   { str: 'true', type: TokenType.TRUE },
   { str: 'false', type: TokenType.FALSE },
+  { str: 'nil', type: TokenType.NIL },
   { str: '[a-zA-Z_][a-zA-Z_0-9]*', type: TokenType.IDENTIFIER },
 ];
 

@@ -117,7 +117,7 @@ const parseExpression = (): Node.Expression => {
 };
 
 const parseAssignment = (): Node.Expression => {
-  const expression = parseComparison();
+  const expression = parseOr();
   if (match(TokenType.EQUAL)) {
     const equals = previous();
     const value = parseAssignment();
@@ -127,6 +127,26 @@ const parseAssignment = (): Node.Expression => {
     error(equals, 'Invalid assignment target.');
   }
   return expression;
+};
+
+const parseOr = (): Node.Expression => {
+  let expr = parseAnd();
+  while (match(TokenType.OR)) {
+    const operator = previous();
+    const right = parseAnd();
+    expr = new Node.BinaryExpression(expr, operator.type, right);
+  }
+  return expr;
+};
+
+const parseAnd = (): Node.Expression => {
+  let expr = parseComparison();
+  while (match(TokenType.AND)) {
+    const operator = previous();
+    const right = parseComparison();
+    expr = new Node.BinaryExpression(expr, operator.type, right);
+  }
+  return expr;
 };
 
 const parseComparison = (): Node.Expression => {
@@ -207,6 +227,10 @@ const parsePrimary = (): Node.Expression => {
     const token = previous();
     const value = token.type === TokenType.TRUE ? true : false;
     return new Node.Boolean(value);
+  }
+
+  if (match(TokenType.NIL)) {
+    return new Node.Nil();
   }
 
   error(previous(), 'Invalid parsing...');
