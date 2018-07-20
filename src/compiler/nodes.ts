@@ -43,6 +43,10 @@ export class IfStatement {
   ) {}
 }
 
+export class WhileStatement {
+  constructor(public condition: Expression, public body: Statement) {}
+}
+
 export class VariableDeclaration {
   constructor(public identifier: Token, public expression: Expression | null) {}
 }

@@ -29,6 +29,7 @@ const captureGroups = [
   { str: 'true', type: TokenType.TRUE },
   { str: 'false', type: TokenType.FALSE },
   { str: 'nil', type: TokenType.NIL },
+  { str: 'while', type: TokenType.WHILE },
   { str: '[a-zA-Z_][a-zA-Z_0-9]*', type: TokenType.IDENTIFIER },
 ];
 

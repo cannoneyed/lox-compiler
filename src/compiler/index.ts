@@ -6,7 +6,9 @@ import { evaluate } from './evaluate';
 export const compile = (input: string) => {
   const tokens = doLexing(input);
   const ast = doParsing(tokens);
+  console.time('execution');
   evaluate(ast);
+  console.timeEnd('execution');
   return { tokens, ast };
 };
 

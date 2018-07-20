@@ -29,6 +29,14 @@ const setVariable = (name: string, value: any) => {
   throw new Error(`${name} is not defined`);
 };
 
+const isTruthy = (value: number | string | null | boolean): boolean => {
+  if (value === false || value === null) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 export const evaluate = (node: Node.Node): any => {
   if (node instanceof Node.Block) {
     variables.push(new Map());
@@ -44,11 +52,17 @@ export const evaluate = (node: Node.Node): any => {
 
   if (node instanceof Node.IfStatement) {
     const { condition, thenBranch, elseBranch } = node;
-    const should = evaluate(condition);
-    if (should) {
+    if (isTruthy(evaluate(condition))) {
       evaluate(thenBranch);
     } else if (elseBranch) {
       evaluate(elseBranch);
+    }
+  }
+
+  if (node instanceof Node.WhileStatement) {
+    const { condition, body } = node;
+    while (isTruthy(evaluate(condition))) {
+      evaluate(body);
     }
   }
 
@@ -82,7 +96,7 @@ export const evaluate = (node: Node.Node): any => {
       case TokenType.MINUS:
         return -1 * right;
       case TokenType.NOT:
-        return !right;
+        return !isTruthy(right);
     }
   }
 
@@ -92,9 +106,9 @@ export const evaluate = (node: Node.Node): any => {
 
     switch (node.operation) {
       case TokenType.AND:
-        return left && right;
+        return isTruthy(left) && isTruthy(right);
       case TokenType.OR:
-        return left || right;
+        return isTruthy(left) || isTruthy(right);
       case TokenType.EQUAL_EQUAL:
         return left === right;
       case TokenType.NOT_EQUAL:

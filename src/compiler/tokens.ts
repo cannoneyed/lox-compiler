@@ -27,6 +27,7 @@ export const enum TokenType {
   RIGHT_PAREN = 'RIGHT_PAREN',
   SEMICOLON = 'SEMICOLON',
   TRUE = 'TRUE',
+  WHILE = 'WHILE',
   VAR = 'VAR',
 }
 

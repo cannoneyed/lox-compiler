@@ -68,6 +68,9 @@ const parseStatement = () => {
   } else if (match(TokenType.IF)) {
     statement = parseIfStatement();
     semicolonNeeded = false;
+  } else if (match(TokenType.WHILE)) {
+    statement = parseWhileStatement();
+    semicolonNeeded = false;
   } else if (match(TokenType.LEFT_BRACE)) {
     const expression = parseBlock();
     statement = new Node.ExpressionStatement(expression);
@@ -81,6 +84,14 @@ const parseStatement = () => {
     consume(TokenType.SEMICOLON, "Expect ';' after statement.");
   }
   return statement;
+};
+
+const parseWhileStatement = (): Node.WhileStatement => {
+  consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+  const expression = parseExpression();
+  consume(TokenType.RIGHT_PAREN, "Expect ')' after while condition.");
+  const body: Node.Statement = parseStatement();
+  return new Node.WhileStatement(expression, body);
 };
 
 const parseIfStatement = (): Node.IfStatement => {
