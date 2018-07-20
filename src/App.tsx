@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ObjectInspector } from 'react-inspector';
 import * as CodeMirror from 'react-codemirror';
 
-import { compile, SyntaxTree, Token, TokenType } from './compiler';
+import { compile, lex, parse, SyntaxTree, Token, TokenType } from './compiler';
 
 import 'codemirror/lib/codemirror.css';
 import './App.css';
@@ -18,13 +18,14 @@ export interface State {
 
 class App extends React.Component<Props, State> {
   state = {
-    pendingCode: 'var x = 1;',
-    compiledCode: 'var x = 1;',
+    pendingCode: localStorage.getItem('pendingCode') || '',
+    compiledCode: localStorage.getItem('pendingCode') || '',
     ast: null,
     tokens: [],
   };
 
   updateCode = (pendingCode: string) => {
+    localStorage.setItem('pendingCode', pendingCode);
     this.setState({ pendingCode });
   };
 
@@ -40,6 +41,18 @@ class App extends React.Component<Props, State> {
     );
   }
 
+  lex() {
+    const code = this.state.pendingCode;
+    const { tokens } = lex(code);
+    this.setState({ compiledCode: code, tokens });
+  }
+
+  parse() {
+    const code = this.state.pendingCode;
+    const { ast, tokens } = parse(code);
+    this.setState({ compiledCode: code, ast, tokens });
+  }
+
   compile() {
     const code = this.state.pendingCode;
     const { ast, tokens } = compile(code);
@@ -47,16 +60,18 @@ class App extends React.Component<Props, State> {
   }
 
   public render() {
-    const { compiledCode, pendingCode, tokens, ast } = this.state;
-    const compileDisabled = compiledCode === pendingCode && ast !== null;
+    const { pendingCode, tokens, ast } = this.state;
+
     const options = { lineNumbers: true };
     return (
       <div className="app">
         <div className="top">
           <CodeMirror value={pendingCode} onChange={this.updateCode} options={options} />
-          <button disabled={compileDisabled} onClick={() => this.compile()}>
-            compile
-          </button>
+          <div className="controls">
+            <button onClick={() => this.lex()}>lex</button>
+            <button onClick={() => this.parse()}>parse</button>
+            <button onClick={() => this.compile()}>compile</button>
+          </div>
         </div>
         <div className="bottom">
           <div className="tokens">

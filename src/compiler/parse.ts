@@ -65,6 +65,8 @@ const parseStatement = () => {
     statement = new Node.PrintStatement(expression);
   } else if (match(TokenType.VAR)) {
     statement = parseVariableDeclaration();
+  } else if (match(TokenType.IF)) {
+    statement = parseIfStatement();
   } else if (match(TokenType.LEFT_BRACE)) {
     const expression = parseBlock();
     statement = new Node.ExpressionStatement(expression);
@@ -78,6 +80,19 @@ const parseStatement = () => {
     consume(TokenType.SEMICOLON, "Expect ';' after statement.");
   }
   return statement;
+};
+
+const parseIfStatement = (): Node.IfStatement => {
+  consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+  const expression = parseExpression();
+  consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+
+  const thenBranch: Node.Statement = parseStatement();
+  let elseBranch: Node.Statement | null = null;
+  if (match(TokenType.ELSE)) {
+    elseBranch = parseStatement();
+  }
+  return new Node.IfStatement(expression, thenBranch, elseBranch);
 };
 
 const parseVariableDeclaration = () => {
@@ -101,7 +116,7 @@ const parseExpression = (): Node.Expression => {
 };
 
 const parseAssignment = (): Node.Expression => {
-  const expression = parseAddition();
+  const expression = parseComparison();
   if (match(TokenType.EQUAL)) {
     const equals = previous();
     const value = parseAssignment();
@@ -111,6 +126,25 @@ const parseAssignment = (): Node.Expression => {
     error(equals, 'Invalid assignment target.');
   }
   return expression;
+};
+
+const parseComparison = (): Node.Expression => {
+  let expr = parseAddition();
+  while (
+    match(
+      TokenType.EQUAL_EQUAL,
+      TokenType.NOT_EQUAL,
+      TokenType.GT,
+      TokenType.GT_EQUAL,
+      TokenType.LT,
+      TokenType.LT_EQUAL
+    )
+  ) {
+    const operator = previous();
+    const right = parseAddition();
+    expr = new Node.BinaryExpression(expr, operator.type, right);
+  }
+  return expr;
 };
 
 const parseAddition = (): Node.Expression => {
@@ -144,9 +178,10 @@ const parseExponentiation = (): Node.Expression => {
 };
 
 const parseUnary = (): Node.Expression => {
-  while (match(TokenType.MINUS)) {
+  while (match(TokenType.MINUS, TokenType.NOT)) {
+    const token = previous();
     const right = parseUnary();
-    return new Node.UnaryExpression(TokenType.MINUS, right);
+    return new Node.UnaryExpression(token.type, right);
   }
   return parsePrimary();
 };
@@ -165,6 +200,12 @@ const parsePrimary = (): Node.Expression => {
   if (match(TokenType.IDENTIFIER)) {
     const identifier = previous();
     return new Node.Identifier(identifier.lexeme);
+  }
+
+  if (match(TokenType.TRUE, TokenType.FALSE)) {
+    const token = previous();
+    const value = token.type === TokenType.TRUE ? true : false;
+    return new Node.Boolean(value);
   }
 
   error(previous(), 'Invalid parsing...');

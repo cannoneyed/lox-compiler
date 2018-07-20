@@ -1,13 +1,24 @@
 import { Token, TokenType } from './tokens';
-import lex from './lex';
-import parse, { SyntaxTree } from './parse';
+import doLexing from './lex';
+import doParsing, { SyntaxTree } from './parse';
 import { evaluate } from './evaluate';
 
 export const compile = (input: string) => {
-  const tokens = lex(input);
-  const ast = parse(tokens);
+  const tokens = doLexing(input);
+  const ast = doParsing(tokens);
   evaluate(ast);
   return { tokens, ast };
+};
+
+export const lex = (input: string) => {
+  const tokens = doLexing(input);
+  return { tokens };
+};
+
+export const parse = (input: string) => {
+  const tokens = doLexing(input);
+  const ast = doParsing(tokens);
+  return { ast, tokens };
 };
 
 export { SyntaxTree, Token, TokenType };
