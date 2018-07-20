@@ -27,7 +27,7 @@ export class PrintStatement {
 }
 
 export class VariableDeclaration {
-  constructor(public identifier: Token, public expression: Expression) {}
+  constructor(public identifier: Token, public expression: Expression | null) {}
 }
 
 export class Identifier {

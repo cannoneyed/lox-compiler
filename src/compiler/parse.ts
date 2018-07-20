@@ -84,6 +84,8 @@ const parseVariableDeclaration = () => {
     if (match(TokenType.EQUAL)) {
       expression = parseExpression();
       return new Node.VariableDeclaration(identifier, expression);
+    } else {
+      return new Node.VariableDeclaration(identifier, null);
     }
   }
   throw error(previous(), 'Expected identifier...');
@@ -140,6 +142,11 @@ const parsePrimary = (): Node.Expression => {
     const expr = parseExpression();
     consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
     return new Node.GroupExpression(expr);
+  }
+
+  if (match(TokenType.IDENTIFIER)) {
+    const identifier = previous();
+    return new Node.Identifier(identifier.lexeme);
   }
 
   return new Node.Empty();
