@@ -58,6 +58,7 @@ const parseBlock = () => {
 
 const parseStatement = () => {
   let statement: Node.Statement;
+  let semicolonNeeded = true;
 
   if (match(TokenType.PRINT)) {
     const expression = parseExpression();
@@ -67,12 +68,15 @@ const parseStatement = () => {
   } else if (match(TokenType.LEFT_BRACE)) {
     const expression = parseBlock();
     statement = new Node.ExpressionStatement(expression);
+    semicolonNeeded = false;
   } else {
     const expression = parseExpression();
     statement = new Node.ExpressionStatement(expression);
   }
 
-  consume(TokenType.SEMICOLON, "Expect ';' after statement.");
+  if (semicolonNeeded) {
+    consume(TokenType.SEMICOLON, "Expect ';' after statement.");
+  }
   return statement;
 };
 
@@ -88,11 +92,25 @@ const parseVariableDeclaration = () => {
       return new Node.VariableDeclaration(identifier, null);
     }
   }
-  throw error(previous(), 'Expected identifier...');
+  error(previous(), 'Expected identifier...');
+  return new Node.Empty();
 };
 
 const parseExpression = (): Node.Expression => {
-  return parseAddition();
+  return parseAssignment();
+};
+
+const parseAssignment = (): Node.Expression => {
+  const expression = parseAddition();
+  if (match(TokenType.EQUAL)) {
+    const equals = previous();
+    const value = parseAssignment();
+    if (expression instanceof Node.Identifier) {
+      return new Node.Assignment(expression, value);
+    }
+    error(equals, 'Invalid assignment target.');
+  }
+  return expression;
 };
 
 const parseAddition = (): Node.Expression => {
@@ -149,6 +167,7 @@ const parsePrimary = (): Node.Expression => {
     return new Node.Identifier(identifier.lexeme);
   }
 
+  error(previous(), 'Invalid parsing...');
   return new Node.Empty();
 };
 

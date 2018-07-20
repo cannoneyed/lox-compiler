@@ -1,8 +1,9 @@
 import { Token, TokenType } from './tokens';
 
-export type Statement = ExpressionStatement | PrintStatement | VariableDeclaration;
+export type Statement = Empty | ExpressionStatement | PrintStatement | VariableDeclaration;
 
 export type Expression =
+  | Assignment
   | Empty
   | Identifier
   | GroupExpression
@@ -28,6 +29,10 @@ export class PrintStatement {
 
 export class VariableDeclaration {
   constructor(public identifier: Token, public expression: Expression | null) {}
+}
+
+export class Assignment {
+  constructor(public identifier: Identifier, public expression: Expression) {}
 }
 
 export class Identifier {

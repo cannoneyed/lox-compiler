@@ -3,16 +3,20 @@
 html,
 body {
   height: 100%;
-  font-family: 'Roboto Mono', monospace;
 }
 
 .app {
-  display: flex;
-  flex-direction: column;
 }
 
 .top {
-  flex-grow: 1;
+  border-bottom: 1px solid rgb(221, 221, 221);
+  height: 40vh;
+  overflow: scroll;
+}
+
+.CodeMirror {
+  height: 100%;
+  padding-bottom: 0;
 }
 
 .top button {
@@ -23,10 +27,11 @@ body {
 }
 
 .bottom {
+  height: 60vh;
   padding-left: 29px;
-  flex-grow: 1;
   display: flex;
   flex-direction: row;
+  font-family: 'Roboto Mono', monospace;
 }
 
 h4 {
@@ -38,6 +43,7 @@ h4 {
   padding: 10px;
   flex-grow: 1;
   height: 100%;
+  overflow: scroll;
 }
 
 .token-type,

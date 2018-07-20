@@ -19,6 +19,16 @@ const getVariable = (name: string) => {
   throw new Error(`${name} is not defined`);
 };
 
+const setVariable = (name: string, value: any) => {
+  for (let i = variables.length - 1; i >= 0; i--) {
+    const scope = variables[i];
+    if (scope.has(name)) {
+      return scope.set(name, value);
+    }
+  }
+  throw new Error(`${name} is not defined`);
+};
+
 export const evaluate = (node: Node.Node): any => {
   if (node instanceof Node.Block) {
     variables.push(new Map());
@@ -29,13 +39,19 @@ export const evaluate = (node: Node.Node): any => {
   }
 
   if (node instanceof Node.PrintStatement) {
-    console.log(node.expression);
+    console.log(evaluate(node.expression));
   }
 
   if (node instanceof Node.VariableDeclaration) {
     const { identifier, expression } = node;
     const value = expression ? evaluate(expression) : null;
     declareVariable(identifier.lexeme, value);
+  }
+
+  if (node instanceof Node.Assignment) {
+    const { identifier, expression } = node;
+    const value = expression ? evaluate(expression) : null;
+    setVariable(identifier.name, value);
   }
 
   if (node instanceof Node.ExpressionStatement) {
