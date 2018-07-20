@@ -42,6 +42,16 @@ export const evaluate = (node: Node.Node): any => {
     console.log(evaluate(node.expression));
   }
 
+  if (node instanceof Node.IfStatement) {
+    const { condition, thenBranch, elseBranch } = node;
+    const should = evaluate(condition);
+    if (should) {
+      evaluate(thenBranch);
+    } else if (elseBranch) {
+      evaluate(elseBranch);
+    }
+  }
+
   if (node instanceof Node.VariableDeclaration) {
     const { identifier, expression } = node;
     const value = expression ? evaluate(expression) : null;

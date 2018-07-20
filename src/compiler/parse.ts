@@ -67,6 +67,7 @@ const parseStatement = () => {
     statement = parseVariableDeclaration();
   } else if (match(TokenType.IF)) {
     statement = parseIfStatement();
+    semicolonNeeded = false;
   } else if (match(TokenType.LEFT_BRACE)) {
     const expression = parseBlock();
     statement = new Node.ExpressionStatement(expression);
