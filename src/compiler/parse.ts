@@ -223,6 +223,11 @@ const parsePrimary = (): Node.Expression => {
     return new Node.Number(Number(previous().lexeme));
   }
 
+  if (match(TokenType.STRING)) {
+    const value = previous().lexeme.replace(/"/g, '');
+    return new Node.String(value);
+  }
+
   if (match(TokenType.LEFT_PAREN)) {
     const expr = parseExpression();
     consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");

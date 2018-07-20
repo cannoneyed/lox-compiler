@@ -23,6 +23,7 @@ const captureGroups = [
   { str: '{', type: TokenType.LEFT_BRACE },
   { str: '}', type: TokenType.RIGHT_BRACE },
   { str: ';', type: TokenType.SEMICOLON },
+  { str: '"(?:[^"\\\\]|\\\\.)*"', type: TokenType.STRING },
   { str: 'if', type: TokenType.IF },
   { str: 'else', type: TokenType.ELSE },
   { str: 'print', type: TokenType.PRINT },

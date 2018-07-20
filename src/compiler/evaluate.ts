@@ -134,7 +134,7 @@ export const evaluate = (node: Node.Node): any => {
     }
   }
 
-  if (node instanceof Node.Number || node instanceof Node.Boolean) {
+  if (node instanceof Node.Number || node instanceof Node.Boolean || node instanceof Node.String) {
     return node.value;
   }
 

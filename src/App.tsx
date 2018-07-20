@@ -30,7 +30,7 @@ class App extends React.Component<Props, State> {
   };
 
   renderToken(token: Token, index: number) {
-    const lexemeTokens = [TokenType.IDENTIFIER, TokenType.NUMBER];
+    const lexemeTokens = [TokenType.IDENTIFIER, TokenType.NUMBER, TokenType.STRING];
     const displayLexeme = lexemeTokens.indexOf(token.type) >= 0;
 
     return (
