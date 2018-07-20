@@ -47,6 +47,15 @@ export class WhileStatement {
   constructor(public condition: Expression, public body: Statement) {}
 }
 
+export class ForStatement {
+  constructor(
+    public initializer: Statement | null,
+    public condition: Expression | null,
+    public increment: Expression | null,
+    public body: Statement
+  ) {}
+}
+
 export class VariableDeclaration {
   constructor(public identifier: Token, public expression: Expression | null) {}
 }

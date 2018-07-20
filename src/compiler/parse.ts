@@ -68,6 +68,9 @@ const parseStatement = () => {
   } else if (match(TokenType.IF)) {
     statement = parseIfStatement();
     semicolonNeeded = false;
+  } else if (match(TokenType.FOR)) {
+    statement = parseForStatement();
+    semicolonNeeded = false;
   } else if (match(TokenType.WHILE)) {
     statement = parseWhileStatement();
     semicolonNeeded = false;
@@ -84,6 +87,51 @@ const parseStatement = () => {
     consume(TokenType.SEMICOLON, "Expect ';' after statement.");
   }
   return statement;
+};
+
+const parseForStatement = (): Node.Statement => {
+  consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+  let initializer: Node.Statement | null;
+  if (match(TokenType.SEMICOLON)) {
+    initializer = null;
+  } else if (match(TokenType.VAR)) {
+    initializer = parseVariableDeclaration();
+  } else {
+    initializer = parseExpression();
+  }
+
+  let condition: Node.Expression | null = null;
+  if (!check(TokenType.SEMICOLON)) {
+    condition = parseExpression();
+  }
+  consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+  let increment: Node.Statement | null = null;
+  if (!check(TokenType.RIGHT_PAREN)) {
+    increment = parseExpression();
+  }
+  consume(TokenType.RIGHT_PAREN, "Expect ')' after for clause.");
+
+  let body: Node.Statement = parseStatement();
+
+  if (increment !== null) {
+    const loopBody = body;
+    body = new Node.Block();
+    (body as Node.Block).statements = [loopBody, increment];
+  }
+
+  if (condition == null) {
+    condition = new Node.Boolean(true);
+  }
+  body = new Node.WhileStatement(condition, body);
+
+  if (initializer != null) {
+    const loopBody = body;
+    body = new Node.Block();
+    (body as Node.Block).statements = [initializer, loopBody];
+  }
+
+  return body;
 };
 
 const parseWhileStatement = (): Node.WhileStatement => {

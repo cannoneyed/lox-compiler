@@ -5,6 +5,7 @@ export const enum TokenType {
   EQUAL = 'EQUAL',
   EQUAL_EQUAL = 'EQUAL_EQUAL',
   FALSE = 'FALSE',
+  FOR = 'FOR',
   GT = 'GT',
   GT_EQUAL = 'GT_EQUAL',
   IDENTIFIER = 'IDENTIFIER',
