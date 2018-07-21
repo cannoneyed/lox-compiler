@@ -19,4 +19,18 @@ yarn start          # run the app
 
 <hr />
 
+## Progress
+
+- [x] Expressions
+- [x] Print Statements
+- [x] Variable Declarations
+- [x] Block Scoping
+- [x] If / Then / Else
+- [x] While / For Loops
+- [ ] Functions
+- [ ] Classes
+- [ ] Bytecode VM
+
+<hr />
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
