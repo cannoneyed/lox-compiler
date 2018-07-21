@@ -1,7 +1,6 @@
 {
-  "name": "compiler-web",
+  "name": "lox-compiler",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "react": "^16.4.1",
     "react-codemirror": "^1.0.0",
