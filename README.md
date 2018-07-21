@@ -8,16 +8,12 @@ Science](https://bradfieldcs.com/).
 
 ![screenshot](./screenshot.png)
 
-<hr />
-
-Get started
+## Get started
 
 ```bash
 yarn                # install dependencies
 yarn start          # run the app
 ```
-
-<hr />
 
 ## Progress
 
