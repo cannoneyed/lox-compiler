@@ -56,9 +56,8 @@ const parseBlock = () => {
   return blockNode;
 };
 
-const parseStatement = () => {
+const parseStatement = (semicolonNeeded = true) => {
   let statement: Node.Statement;
-  let semicolonNeeded = true;
 
   if (match(TokenType.PRINT)) {
     const expression = parseExpression();
@@ -96,8 +95,10 @@ const parseForStatement = (): Node.Statement => {
     initializer = null;
   } else if (match(TokenType.VAR)) {
     initializer = parseVariableDeclaration();
+    consume(TokenType.SEMICOLON, "Expect ';' after loop initializer.");
   } else {
     initializer = parseExpression();
+    consume(TokenType.SEMICOLON, "Expect ';' after loop initializer.");
   }
 
   let condition: Node.Expression | null = null;
@@ -111,7 +112,6 @@ const parseForStatement = (): Node.Statement => {
     increment = parseExpression();
   }
   consume(TokenType.RIGHT_PAREN, "Expect ')' after for clause.");
-
   let body: Node.Statement = parseStatement();
 
   if (increment !== null) {
