@@ -56,8 +56,9 @@ const parseBlock = () => {
   return blockNode;
 };
 
-const parseStatement = (semicolonNeeded = true) => {
+const parseStatement = () => {
   let statement: Node.Statement;
+  let semicolonNeeded = true;
 
   if (match(TokenType.PRINT)) {
     const expression = parseExpression();
