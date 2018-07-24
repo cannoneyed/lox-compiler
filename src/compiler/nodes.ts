@@ -11,6 +11,7 @@ export type Statement =
 export type Expression =
   | Assignment
   | Boolean
+  | Call
   | Empty
   | Identifier
   | GroupExpression
@@ -60,6 +61,10 @@ export class VariableDeclaration {
   constructor(public identifier: Token, public expression: Expression | null) {}
 }
 
+export class FunctionDeclaration {
+  constructor(public identifier: Token, public parameters: Token[], public body: Block) {}
+}
+
 export class Assignment {
   constructor(public identifier: Identifier, public expression: Expression) {}
 }
@@ -86,6 +91,10 @@ export class String {
 
 export class Nil {
   constructor() {}
+}
+
+export class Call {
+  constructor(public callee: Expression, public args: Expression[]) {}
 }
 
 export class UnaryExpression {

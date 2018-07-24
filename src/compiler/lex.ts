@@ -2,6 +2,7 @@ import { Token, TokenType } from './tokens';
 
 const captureGroups = [
   { str: '\\d+(?:\\.\\d+)?', type: TokenType.NUMBER },
+  { str: ',', type: TokenType.COMMA },
   { str: '\\+', type: TokenType.PLUS },
   { str: '\\-', type: TokenType.MINUS },
   { str: '\\*', type: TokenType.MULTIPLY },
@@ -32,6 +33,7 @@ const captureGroups = [
   { str: 'nil', type: TokenType.NIL },
   { str: 'for', type: TokenType.FOR },
   { str: 'while', type: TokenType.WHILE },
+  { str: 'fn', type: TokenType.FUNCTION },
   { str: '[a-zA-Z_][a-zA-Z_0-9]*', type: TokenType.IDENTIFIER },
 ];
 

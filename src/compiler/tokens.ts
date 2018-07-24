@@ -1,11 +1,13 @@
 export const enum TokenType {
   AND = 'AND',
+  COMMA = 'COMMA',
   DIVIDE = 'DIVIDE',
   ELSE = 'ELSE',
   EQUAL = 'EQUAL',
   EQUAL_EQUAL = 'EQUAL_EQUAL',
   FALSE = 'FALSE',
   FOR = 'FOR',
+  FUNCTION = 'FUNCTION',
   GT = 'GT',
   GT_EQUAL = 'GT_EQUAL',
   IDENTIFIER = 'IDENTIFIER',

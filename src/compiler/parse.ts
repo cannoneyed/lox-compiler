@@ -65,6 +65,9 @@ const parseStatement = () => {
     statement = new Node.PrintStatement(expression);
   } else if (match(TokenType.VAR)) {
     statement = parseVariableDeclaration();
+  } else if (match(TokenType.FUNCTION)) {
+    statement = parseFunctionDeclaration('function');
+    semicolonNeeded = false;
   } else if (match(TokenType.IF)) {
     statement = parseIfStatement();
     semicolonNeeded = false;
@@ -172,6 +175,21 @@ const parseVariableDeclaration = () => {
   return new Node.Empty();
 };
 
+const parseFunctionDeclaration = (kind: string) => {
+  const parameters: Token[] = [];
+  const name = consume(TokenType.IDENTIFIER, 'Expect ' + kind + ' name.');
+  consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + ' name.');
+  if (!check(TokenType.RIGHT_PAREN)) {
+    do {
+      parameters.push(consume(TokenType.IDENTIFIER, 'Expect parameter name'));
+    } while (match(TokenType.COMMA));
+  }
+  consume(TokenType.RIGHT_PAREN, "Expect '(' after parameters");
+  consume(TokenType.LEFT_BRACE, "Expect '{' before " + kind + ' body.');
+  const body = parseBlock();
+  return new Node.FunctionDeclaration(name, parameters, body);
+};
+
 const parseExpression = (): Node.Expression => {
   return parseAssignment();
 };
@@ -264,7 +282,32 @@ const parseUnary = (): Node.Expression => {
     const right = parseUnary();
     return new Node.UnaryExpression(token.type, right);
   }
-  return parsePrimary();
+  return parseCall();
+};
+
+const parseCall = (): Node.Expression => {
+  let expression = parsePrimary();
+
+  while (true) {
+    if (match(TokenType.LEFT_PAREN)) {
+      expression = finishCallExpression(expression);
+    } else {
+      break;
+    }
+  }
+  return expression;
+};
+
+const finishCallExpression = (callee: Node.Expression) => {
+  const args: Node.Expression[] = [];
+  if (!check(TokenType.RIGHT_PAREN)) {
+    do {
+      args.push(parseExpression());
+    } while (match(TokenType.COMMA));
+  }
+
+  consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+  return new Node.Call(callee, args);
 };
 
 const parsePrimary = (): Node.Expression => {
