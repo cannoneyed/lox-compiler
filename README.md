@@ -1,6 +1,6 @@
 # lox compiler 🍣
 
-[http://cannoneyed.com/lox-compiler/](http://cannoneyed.com/lox-compiler/)
+**Demo:** [http://cannoneyed.com/lox-compiler/](http://cannoneyed.com/lox-compiler/)
 
 A typescript / react web app implentation of a lexer / parser / tree-walk
 interpreter for the lox language, as described in [Crafting
