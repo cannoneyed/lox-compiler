@@ -37,13 +37,42 @@ const isTruthy = (value: number | string | null | boolean): boolean => {
   }
 };
 
+interface LoxCallable {
+  call(args: any[]): void;
+}
+
+class LoxFunction implements LoxCallable {
+  constructor(public declaration: Node.FunctionDeclaration) {}
+
+  call(args: any[]): void {
+    variables.push(new Map());
+
+    for (const index in this.declaration.parameters) {
+      const parameter = this.declaration.parameters[index];
+      const argument = args[index];
+      declareVariable(parameter.lexeme, argument);
+    }
+
+    evaluate(this.declaration.body);
+    variables.push(new Map());
+  }
+
+  get arity() {
+    return this.declaration.parameters.length;
+  }
+
+  toString() {
+    return `fn <${this.declaration.identifier.lexeme}>`;
+  }
+}
+
 export const evaluate = (node: Node.Node): any => {
   if (node instanceof Node.Block) {
     variables.push(new Map());
     for (const statement of node.statements) {
       evaluate(statement);
     }
-    variables.pop();
+    variables.push(new Map());
   }
 
   if (node instanceof Node.PrintStatement) {
@@ -72,6 +101,12 @@ export const evaluate = (node: Node.Node): any => {
     declareVariable(identifier.lexeme, value);
   }
 
+  if (node instanceof Node.FunctionDeclaration) {
+    const { identifier } = node;
+    const loxFunction = new LoxFunction(node);
+    declareVariable(identifier.lexeme, loxFunction);
+  }
+
   if (node instanceof Node.Assignment) {
     const { identifier, expression } = node;
     const value = expression ? evaluate(expression) : null;
@@ -98,6 +133,15 @@ export const evaluate = (node: Node.Node): any => {
       case TokenType.NOT:
         return !isTruthy(right);
     }
+  }
+
+  if (node instanceof Node.Call) {
+    const fn = evaluate(node.callee);
+    const args: any[] = [];
+    for (let arg of node.args) {
+      args.push(evaluate(arg));
+    }
+    return (fn as LoxCallable).call(args);
   }
 
   if (node instanceof Node.BinaryExpression) {
