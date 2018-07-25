@@ -26,6 +26,7 @@ export const enum TokenType {
   PLUS = 'PLUS',
   POWER = 'POWER',
   PRINT = 'PRINT',
+  RETURN = 'RETURN',
   RIGHT_BRACE = 'RIGHT_BRACE',
   RIGHT_PAREN = 'RIGHT_PAREN',
   SEMICOLON = 'SEMICOLON',

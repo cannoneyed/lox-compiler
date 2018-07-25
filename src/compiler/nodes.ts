@@ -6,7 +6,8 @@ export type Statement =
   | ExpressionStatement
   | PrintStatement
   | VariableDeclaration
-  | IfStatement;
+  | IfStatement
+  | ReturnStatement;
 
 export type Expression =
   | Assignment
@@ -42,6 +43,10 @@ export class IfStatement {
     public thenBranch: Statement,
     public elseBranch: Statement | null
   ) {}
+}
+
+export class ReturnStatement {
+  constructor(public expression: Expression | null) {}
 }
 
 export class WhileStatement {

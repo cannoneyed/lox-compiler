@@ -2,16 +2,16 @@ import * as Node from './nodes';
 import { TokenType } from './tokens';
 
 type Scope = Map<string, any>;
-const variables: Scope[] = [];
+const scopes: Scope[] = [];
 
 const declareVariable = (name: string, value: any) => {
-  const scope = variables[variables.length - 1];
+  const scope = scopes[scopes.length - 1];
   scope.set(name, value);
 };
 
 const getVariable = (name: string) => {
-  for (let i = variables.length - 1; i >= 0; i--) {
-    const scope = variables[i];
+  for (let i = scopes.length - 1; i >= 0; i--) {
+    const scope = scopes[i];
     if (scope.has(name)) {
       return scope.get(name);
     }
@@ -20,8 +20,8 @@ const getVariable = (name: string) => {
 };
 
 const setVariable = (name: string, value: any) => {
-  for (let i = variables.length - 1; i >= 0; i--) {
-    const scope = variables[i];
+  for (let i = scopes.length - 1; i >= 0; i--) {
+    const scope = scopes[i];
     if (scope.has(name)) {
       return scope.set(name, value);
     }
@@ -45,7 +45,7 @@ class LoxFunction implements LoxCallable {
   constructor(public declaration: Node.FunctionDeclaration) {}
 
   call(args: any[]): void {
-    variables.push(new Map());
+    scopes.push(new Map());
 
     for (const index in this.declaration.parameters) {
       const parameter = this.declaration.parameters[index];
@@ -53,8 +53,17 @@ class LoxFunction implements LoxCallable {
       declareVariable(parameter.lexeme, argument);
     }
 
-    evaluate(this.declaration.body);
-    variables.push(new Map());
+    let returnValue = null;
+    try {
+      evaluate(this.declaration.body);
+    } catch (e) {
+      if (e instanceof Return) {
+        returnValue = e.value;
+      }
+    }
+
+    scopes.pop();
+    return returnValue;
   }
 
   get arity() {
@@ -66,17 +75,27 @@ class LoxFunction implements LoxCallable {
   }
 }
 
+class Return {
+  constructor(public value: any) {}
+}
+
 export const evaluate = (node: Node.Node): any => {
   if (node instanceof Node.Block) {
-    variables.push(new Map());
+    scopes.push(new Map());
     for (const statement of node.statements) {
       evaluate(statement);
     }
-    variables.push(new Map());
+    scopes.push(new Map());
   }
 
   if (node instanceof Node.PrintStatement) {
     console.log(evaluate(node.expression));
+  }
+
+  if (node instanceof Node.ReturnStatement) {
+    const { expression } = node;
+    let value = expression === null ? expression : evaluate(expression);
+    throw new Return(value);
   }
 
   if (node instanceof Node.IfStatement) {

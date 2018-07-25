@@ -34,6 +34,7 @@ const captureGroups = [
   { str: 'for', type: TokenType.FOR },
   { str: 'while', type: TokenType.WHILE },
   { str: 'fn', type: TokenType.FUNCTION },
+  { str: 'return', type: TokenType.RETURN },
   { str: '[a-zA-Z_][a-zA-Z_0-9]*', type: TokenType.IDENTIFIER },
 ];
 

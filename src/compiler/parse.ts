@@ -63,6 +63,9 @@ const parseStatement = () => {
   if (match(TokenType.PRINT)) {
     const expression = parseExpression();
     statement = new Node.PrintStatement(expression);
+  } else if (match(TokenType.RETURN)) {
+    statement = parseReturnStatement();
+    semicolonNeeded = false;
   } else if (match(TokenType.VAR)) {
     statement = parseVariableDeclaration();
   } else if (match(TokenType.FUNCTION)) {
@@ -90,6 +93,15 @@ const parseStatement = () => {
     consume(TokenType.SEMICOLON, "Expect ';' after statement.");
   }
   return statement;
+};
+
+const parseReturnStatement = (): Node.ReturnStatement => {
+  let value = null;
+  if (!check(TokenType.SEMICOLON)) {
+    value = parseExpression();
+  }
+  consume(TokenType.SEMICOLON, "Expect ';' after return value.");
+  return new Node.ReturnStatement(value);
 };
 
 const parseForStatement = (): Node.Statement => {
